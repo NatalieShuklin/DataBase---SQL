@@ -1,6 +1,15 @@
-SELECT DISTINCT institution,name
-FROM authors A NATURAL JOIN conferences C NATURAL JOIN institutions S
-WHERE S.country = 'il' and ((A.adjustedcount>=2 and C.area ='ai') or (A.adjustedcount>=2 and C.Subarea ='db'))
-ORDER BY institution,
-         name;
+SELECT DISTINCT name
+FROM (  SELECT name, year, conference, count
+        FROM authors NATURAL JOIN conferences
+        WHERE area='systems') T
+GROUP BY name
+HAVING SUM(count) >= 2
+
+INTERSECT
+
+SELECT distinct name
+FROM (    SELECT name, year, conference, count
+    FROM authors NATURAL JOIN conferences
+    WHERE area='systems' and year>=2014) S
+ORDER BY name;
 

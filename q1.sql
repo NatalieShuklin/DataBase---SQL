@@ -1,6 +1,4 @@
-SELECT DISTINCT name
-FROM authors
-WHERE institution ='Hebrew University of Jerusalem'
-ORDER BY name;
-
-
+SELECT region, count(DISTINCT country) AS countryCount
+FROM institutions
+GROUP BY region
+ORDER BY region;

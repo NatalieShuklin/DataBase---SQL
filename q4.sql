@@ -1,12 +1,13 @@
-SELECT DISTINCT name,year
-FROM authors A NATURAL JOIN conferences C
-WHERE C.Subarea='vision' and institution = 'Hebrew University of Jerusalem'
+WITH PublishedPerCountry(countPerCountry,country,region) as
+         (SELECT SUM(count) AS countPerCountry,country,region
+          FROM institutions NATURAL LEFT OUTER JOIN authors
+          GROUP BY country,region)
 
-INTERSECT
 
-SELECT DISTINCT name,year
-FROM authors A NATURAL JOIN conferences C
-WHERE C.Subarea='ml' and institution = 'Hebrew University of Jerusalem'
-ORDER BY name,
-    year;
+SELECT region, country, countPerCountry AS totalCount
+FROM PublishedPerCountry S
+WHERE S.countPerCountry = (SELECT MAX(countPerCountry) 
+                           FROM PublishedPerCountry S2
+                           WHERE S2.region = S.region)
 
+ORDER BY region, country;
